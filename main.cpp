@@ -1,72 +1,96 @@
 #include<vector>
-#include<string>
 #include<iostream>
-#include "bitmap.h"
-
+#include"bitmap.h"
+#include<string>
 using namespace std;
-string getinput(vector<string>); //gets user input for new picture locations.
-char newpicture(); //asks the user whether or not they want to add a new picture to the composite image.
-int redcomposite(vector <vector< vector< pixels > > >); //gets the sum of the red color values for all picture
-int bluecomposite(vector <vector< vector< pixels > > >); // gets the sume of blue color values for all picture.
-int greencomposite(vector <vector< vector< pixels > > >); // gets sum of green color values for all picture
-const int MAX_PICTURES = 10;
+string getinput(); //gets user input for new pictures.
+
+Pixel colorcomposite(vector <vector < vector < Pixel > > >,int,int,int); //returns a pixel that is the sum building a new picture.
+
+bool samesize(vector < vector < Pixel > >, vector < vector < Pixel > >); //validates that 2 images are the same size.
+
+
+
+int MAX_PICTURES = 10;
 
 int main()
-{ string image;
-  bool validImage = image.isImage();
-  char newinput;
-  vector<string> pictures;
-  vector< vector < vector < pixels > > > images;
-      //Get users input for each individual image and set up a loop for getting all their pictures.
-      while(pictures.size<=MAX_PICTURES && (newpicture=='Y' || newpicture=='y'))
-      { string Location;
-        getinput();
-        Location = getinput();
-               
-        // validate each image seperately and store such images as a vector of vectors
-        Location.isImage();
-        if(Location.isImage == "true")
-        { pictures.push_back(Location);
+{ 
+        string input;
+        Bitmap image;
+        string newinput;
+        vector<string> pictures;
+        vector < vector < Pixel > > bmp;
+        vector< vector < vector < Pixel > > > images;
+        vector < vector < Pixel > > compositeImage;
+        // get user input for each individual image and get pictures
+        while(pictures.size()<=MAX_PICTURES && input !="DONE")
+        { input = getinput();
+                if(input != "DONE")
+                {
+                        pictures.push_back(input);
+                }
+
+
+        }
+        for(int i=0; i<pictures.size();i++)
+        { image.open(pictures[i]);
+                bool validImage = image.isImage();
+                if(validImage == true)
+                { bmp = image.toPixelMatrix();
+                        images.push_back(bmp);  
+                }
+        }
+        for(int j=0; j<images.size();j++)
+        {
+                bool validsize = samesize(images[0],images[j]);
+                if(validsize==false)
+                { images.erase(images.begin()+j);
+                        cout << "The image has the wrong dimensions! it will not be included." << endl;
+                }
+        }
+        for(int i =0; i<images.size();i++)
+        {
+                for(int j=0; j<images[j].size();j++)
+                {
+                        for(int k=0;k<images[i][j].size();k++)
+                        {   
+                                
+
+                        }
+                }
+        }
+
+
+
+
+
+
+
+
+        return 0;
+}
+
+
+string getinput()
+{ 
+        string pictureLocation;
+        cout<< "Please insert a bmp image." << endl;
+        cin>>pictureLocation;
+        return pictureLocation;
+}
+bool samesize(vector < vector < Pixel > > pic1, vector < vector < Pixel > > pic2)
+{ 
+        if(pic1.size()==pic2.size() && pic1[0].size() == pic2[0].size())
+        { return true;
         }
         else
-        { newpicture = 'Y'
+        { return false;
         }
-        // allow user to keep inserting new pictures but force them to stop after 10.
-        if(newpicture !=='Y')
-        { newpicture()
-        }
-       }
-      for(int i=0; i<pictures.size(); i++)
-      { 
-        image.open(pictures[i]);
-        image.toPixelMatrix(pictures[i]) = image;
-        images.push_back(pictures[i]);
-      }
-
-
-
-      //take the average of each of the red, blue, green colors of each individual picture
-      
-
-
-      //create a new image, that has the average of each color at each pixel.
-
-
-
-      //save the image as "composite-revolutionkyle."
-
-
-
-return 0;     
 }
-string getinput();
-{ string pictureLocation;
-  cout<<"Please insert a valid bmp image." << endl;
-  cin>>pictureLocation;
-  return pictureLocation;
-}
-char newpicture()
-{ cout << "Would you like to insert another picture? Y/N" << endl;
-  cin>>newpicture;
-  return newpicture;
+Pixel colorcomposite(vector < vector < vector < Pixel > > > bitmap,int a,int b,int c)
+{ 
+        Pixel rgb;
+        rgb = bitmap[a][b][c];
+        return rgb;
+
 }
