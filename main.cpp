@@ -1,66 +1,101 @@
 #include<vector>
 #include<iostream>
-#include"bitmap.h"
 #include<string>
+#include"bitmap.h"
+
 using namespace std;
-string getinput(); //gets user input for new pictures.
 
-Pixel colorcomposite(vector <vector < vector < Pixel > > >,int,int,int); //returns a pixel that is the sum building a new picture.
+string getinput(); //gets input from user for file names.
 
-bool samesize(vector < vector < Pixel > >, vector < vector < Pixel > >); //validates that 2 images are the same size.
+bool samesize(vector < vector < Pixel > >, vector < vector < Pixel > >); //tests whether or not 2 images are the same size.
 
+void averagepixel(vector < vector < Pixel > >&,int); //takes the average value of each color at each pixel based around the integer.
 
-
-int MAX_PICTURES = 10;
+void compositetransform(vector < vector < vector < Pixel > > >, vector < vector < Pixel > >);
+const int MAX_PICTURES = 255;
 
 int main()
-{ 
-        string input;
-        Bitmap image;
-        string newinput;
+{ //variable declaration.
         vector<string> pictures;
-        vector < vector < Pixel > > bmp;
-        vector< vector < vector < Pixel > > > images;
         vector < vector < Pixel > > compositeImage;
-        // get user input for each individual image and get pictures
-        while(pictures.size()<=MAX_PICTURES && input !="DONE")
-        { input = getinput();
+        Bitmap image;
+        vector < vector < vector < Pixel > > > images;
+        vector < vector < Pixel > > bmp;
+        string input;
+        //get user input and fill a vector of strings.
+
+        while(input != "DONE" && pictures.size()<=MAX_PICTURES)
+        { 
+                input = getinput();
                 if(input != "DONE")
                 {
                         pictures.push_back(input);
                 }
 
-
         }
-        for(int i=0; i<pictures.size();i++)
-        { image.open(pictures[i]);
-                bool validImage = image.isImage();
-                if(validImage == true)
-                { bmp = image.toPixelMatrix();
-                        images.push_back(bmp);  
-                }
-        }
-        for(int j=0; j<images.size();j++)
-        {
-                bool validsize = samesize(images[0],images[j]);
-                if(validsize==false)
-                { images.erase(images.begin()+j);
-                        cout << "The image has the wrong dimensions! it will not be included." << endl;
-                }
-        }
-        for(int i =0; i<images.size();i++)
-        {
-                for(int j=0; j<images[j].size();j++)
+        //open and validate the images as proper images
+        for(int i=0;i<pictures.size();i++)
+        { 
+                image.open(pictures[i]);
+                if(image.isImage())
                 {
-                        for(int k=0;k<images[i][j].size();k++)
-                        {   
-                                
+                        bmp = image.toPixelMatrix();
+                        images.push_back(bmp);
+                }
+                else
+                { cout << "Not an image!" << pictures[i] << " won't be included." << endl;
+                }
+        }
+        if(images.size() <2)
+        {
+                cout << "Error! composite image cannot be made." << endl;
+                return 0;
+        }
 
+        for(int j=0; j< images.size();j++)
+        {
+                if(samesize(images[0],images[j])==false)
+                {
+                        images.erase(images.begin()+j);
+                        cout << "This image has the wrong dimensions! It will not be included." << endl;
+                }
+        }
+
+        //loop through the 3d matrix and fill it with the sum of rgb values.
+
+        int numpics = images.size();
+        int rows = images[0].size();
+        int cols = images[0][0].size();
+        compositeImage.resize(images[0].size());
+        for(int i=0;i<images[0].size();i++)
+        {
+                compositeImage[i].resize(images[0][0].size());
+        }
+
+
+        for(int i=0;i<cols;i++)
+        {
+                for(int j=0;j<rows;j++)
+                {
+                        for(int k=0;k<numpics;k++)
+                        {   Pixel rgb =compositeImage[j][i];
+                                rgb.red += images[k][j][i].red;
+                                rgb.blue += images[k][j][i].blue;
+                                rgb.green += images[k][j][i].green;
+                                compositeImage[j][i] = rgb;
                         }
                 }
+                cout << "Row " << i << " is processed." << endl;
         }
 
 
+        //average the values of each color for each pixel based on number of pictures.
+        averagepixel(compositeImage,numpics);
+        //convert matrix back into an image.
+        image.fromPixelMatrix(compositeImage);
+        //save image as composite-revolutionkyle.bmp
+        image.save("composite-revolutionkyle.bmp");
+        cout << "The composite image is ready!" << endl;
 
 
 
@@ -72,25 +107,32 @@ int main()
 
 
 string getinput()
-{ 
-        string pictureLocation;
-        cout<< "Please insert a bmp image." << endl;
-        cin>>pictureLocation;
+{   string pictureLocation;
+        cout << "Please insert an image." << endl;
+        cin >> pictureLocation;
         return pictureLocation;
 }
 bool samesize(vector < vector < Pixel > > pic1, vector < vector < Pixel > > pic2)
-{ 
-        if(pic1.size()==pic2.size() && pic1[0].size() == pic2[0].size())
-        { return true;
+{
+        if(pic1.size() == pic2.size() || pic1[0].size() == pic2.size())
+        {
+                return true;
         }
         else
-        { return false;
+        {
+                return false;
         }
 }
-Pixel colorcomposite(vector < vector < vector < Pixel > > > bitmap,int a,int b,int c)
-{ 
-        Pixel rgb;
-        rgb = bitmap[a][b][c];
-        return rgb;
-
+void averagepixel(vector < vector < Pixel > >& picture, int a )
+{
+        for(int i=0;i<picture.size();i++)
+        {
+                for(int j=0;j<picture[i].size();j++)
+                {
+                        picture[i][j].red = picture[i][j].red/a;
+                        picture[i][j].blue = picture[i][j].blue/a;
+                        picture[i][j].green = picture[i][j].green/a;
+                }
+        }
 }
+
