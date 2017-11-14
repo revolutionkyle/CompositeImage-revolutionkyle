@@ -85,7 +85,7 @@ int main()
                         }
                         
                 }
-               if(i==images[0][0].size())
+               if(i==images[0][0].size()/2)
                {
                 cout<< "The composite image is halfway done." << endl;
                }
