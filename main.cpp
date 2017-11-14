@@ -71,8 +71,8 @@ int main()
         {
                 compositeImage[i].resize(images[0][0].size());
         }
-
-
+        
+        int l=0;
         for(int i=0;i<cols;i++)
         {
                 for(int j=0;j<rows;j++)
@@ -84,8 +84,13 @@ int main()
                                 rgb.green += images[k][j][i].green;
                                 compositeImage[j][i] = rgb;
                         }
+                        
                 }
-                cout << "Row " << i << " is processed." << endl;
+                l++;
+                if(l== images[0].size()/2)
+                {
+                cout << "The composite image is halfway done!" << endl; 
+                }
         }
 
 
