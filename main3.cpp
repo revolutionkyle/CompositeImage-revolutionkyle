@@ -14,7 +14,7 @@ void averagevector(vector < vector < int > >&, int);
 const int MAX_PICTURES = 10;
 
 int main()
-{   Bitmap image;
+{       Bitmap image;
         string input;
         string newinput;
         vector < vector < Pixel > > Image;
@@ -27,8 +27,10 @@ int main()
         while(input !="DONE" && k<= MAX_PICTURES)
         {
                 input = getinput();
+                if(input != "DONE")
+                {
                 image.open(input);
-
+                }
                 bool validImage = image.isImage();
                 if(validImage == true)
                 {
@@ -82,9 +84,9 @@ int main()
         
         for(int i=0; i< compositeImage.size();i++)
         {
-                for(int j=0; j<compositeImage[0].size();j++)
+                for(int j=0; j<compositeImage[i].size();j++)
                 {
-                        Pixel rgb;
+                        Pixel rgb = compositeImage[i][j];
                         rgb.red = redSumVector[i][j];
                         rgb.blue = blueSumVector[i][j];
                         rgb.green = greenSumVector[i][j];
@@ -92,10 +94,11 @@ int main()
 
                 }
         }
+
         image.fromPixelMatrix(compositeImage);
         image.save("Composite-revolutionkyle");
-        cout << compositeImage.size() << endl;
-        cout << redsumvector[0][0] << endl;
+        
+
 
 
 
@@ -125,7 +128,7 @@ void averagevector(vector < vector < int > >& picture, int k)
         {
                 for(int j=0;j<picture[i].size();j++)
                 {
-                        picture[i][j] = picture[i][j]/k;
+                        picture[i][j] = (picture[i][j]/k);
                 }
         }
 }
