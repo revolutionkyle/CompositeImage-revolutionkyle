@@ -11,8 +11,7 @@ bool samesize(vector < vector < Pixel > >, vector < vector < Pixel > >); //tests
 
 void averagepixel(vector < vector < Pixel > >&,int); //takes the average value of each color at each pixel based around the integer.
 
-void compositetransform(vector < vector < vector < Pixel > > >, vector < vector < Pixel > >);
-const int MAX_PICTURES = 255;
+
 
 int main()
 { //variable declaration.
@@ -24,7 +23,7 @@ int main()
         string input;
         //get user input and fill a vector of strings.
 
-        while(input != "DONE" && pictures.size()<=MAX_PICTURES)
+        while(input != "DONE")
         { 
                 input = getinput();
                 if(input != "DONE")
@@ -72,7 +71,7 @@ int main()
                 compositeImage[i].resize(images[0][0].size());
         }
         
-        int l=0;
+        
         for(int i=0;i<cols;i++)
         {
                 for(int j=0;j<rows;j++)
@@ -86,11 +85,11 @@ int main()
                         }
                         
                 }
-                l++;
-                if(l== images[0].size()/2)
-                {
-                cout << "The composite image is halfway done!" << endl; 
-                }
+               if(i==images[0][0].size())
+               {
+                cout<< "The composite image is halfway done." << endl;
+               }
+                
         }
 
 
@@ -128,16 +127,17 @@ bool samesize(vector < vector < Pixel > > pic1, vector < vector < Pixel > > pic2
                 return false;
         }
 }
-void averagepixel(vector < vector < Pixel > >& picture, int a )
+void averagepixel(vector < vector < Pixel > >& image, int a)
 {
-        for(int i=0;i<picture.size();i++)
+    for(int i=0;i<image.size();i++)
+    {
+        for(int j=0;j<image[i].size();j++)
         {
-                for(int j=0;j<picture[i].size();j++)
-                {
-                        picture[i][j].red = picture[i][j].red/a;
-                        picture[i][j].blue = picture[i][j].blue/a;
-                        picture[i][j].green = picture[i][j].green/a;
-                }
+            Pixel rgb = image[i][j];
+            rgb.red = rgb.red/a;
+            rgb.blue = rgb.blue/a;
+            rgb.green = rgb.green/a;
+            image[i][j] = rgb;
         }
+    }
 }
-
